@@ -1,0 +1,54 @@
+Simulacion Monte Carlo de epidemias paralela
+
+Simulacion de propagacion de enfermedades usando el modelo SIR en una grilla 2D de 1000x1000 celdas (1 millon de personas) durante 365 dias.
+
+Modelo SIR
+
+Cada persona esta en uno de tres estados:
+
+S (Susceptible): sana, puede contagiarse
+I (Infectado): enferma, puede contagiar a sus vecinos
+R (Recuperado): ya no participa en el contagio
+
+Cada dia se aplican estas reglas a todas las personas:
+Una persona S se infecta si tiene al menos un vecino infectado con probabilidad 0.3
+Una persona I se recupera o muere con probabilidad 0.12 y pasa a R
+
+Instalacion de requisitos
+
+Antes de correr el programa hay que instalar las librerias necesarias.
+
+Instala las librerias con este comando:
+
+pip install -r requirements.txt
+
+Eso instala automaticamente: numpy, scipy, matplotlib y pillow.
+
+Como correrlo
+
+python Secuencial.py
+
+Eso ejecuta la simulacion completa y guarda todos los resultados.
+
+Archivos
+
+Secuencial.py
+
+Contiene la logica de la simulacion:
+Crea la grilla con 5 personas infectadas al inicio
+Cada dia actualiza el estado de todas las personas usando NumPy
+Al terminar llama automaticamente a guardar.py
+
+guardar.py
+
+Guarda los resultados en la carpeta resultados:
+
+Archivo | Contenido
+estadisticas_secuencial.csv | cantidad de S, I, R por cada dia
+tiempos.csv | tiempo total de ejecucion
+curvas_sir_secuencial.png | grafica de las 3 curvas a lo largo del tiempo
+brote_secuencial.gif | animacion del brote (1 frame por semana)
+
+requirements.txt
+
+Lista de librerias necesarias para correr el proyecto.
