@@ -43,11 +43,11 @@ guardar.py
 
 Guarda los resultados en la carpeta resultados:
 
-Archivo | Contenido
-estadisticas_secuencial.csv | cantidad de S, I, R por cada dia
-tiempos.csv | tiempo total de ejecucion
-curvas_sir_secuencial.png | grafica de las 3 curvas a lo largo del tiempo
-brote_secuencial.gif | animacion del brote (1 frame por semana)
+Archivo  
+estadisticas_secuencial.csv: cantidad de S, I, R por cada dia
+tiempos.csv: tiempo total de ejecucion
+curvas_sir_secuencial.png: grafica de las 3 curvas a lo largo del tiempo
+brote_secuencial.gif: animacion del brote 1 frame por semana
 
 requirements.txt
 
