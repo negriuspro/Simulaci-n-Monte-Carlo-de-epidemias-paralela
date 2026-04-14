@@ -1,6 +1,6 @@
 Simulacion Monte Carlo de epidemias paralela
 
-Simulacion de propagacion de enfermedades usando el modelo SIR en una grilla 2D de 1000x1000 celdas (1 millon de personas) durante 365 dias.
+Simulacion de propagacion de enfermedades usando el modelo SIR en una grilla 2D de 1000x1000 celdas 1 millon de personas durante 365 dias.
 
 Modelo SIR
 
@@ -43,11 +43,15 @@ guardar.py
 
 Guarda los resultados en la carpeta resultados:
 
-Archivo  
+Archivo
+
 estadisticas_secuencial.csv: cantidad de S, I, R por cada dia
+
 tiempos.csv: tiempo total de ejecucion
+
 curvas_sir_secuencial.png: grafica de las 3 curvas a lo largo del tiempo
-brote_secuencial.gif: animacion del brote 1 frame por semana
+
+brote_secuencial.gif: animacion del brote con 1 frame por semana
 
 requirements.txt
 
