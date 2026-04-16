@@ -2,7 +2,6 @@ import csv
 import os
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from Secuencial import dias
 
 
 def guardar(hist_s, hist_i, hist_r, frames, tiempo):
@@ -54,4 +53,3 @@ def guardar(hist_s, hist_i, hist_r, frames, tiempo):
     )
     anim.save("resultados/brote_secuencial.gif", writer="pillow", fps=8)
     plt.close()
-    print("Guardado: brote_secuencial.gif")
