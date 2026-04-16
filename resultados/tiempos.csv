@@ -1,0 +1,6 @@
+version,cores,tiempo_s
+secuencial,1,8.512
+paralelo,1,10.1327
+paralelo,2,5.747
+paralelo,4,4.0524
+paralelo,8,3.4875

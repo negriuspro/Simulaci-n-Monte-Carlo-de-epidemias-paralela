@@ -97,4 +97,4 @@ if __name__ == "__main__":
 
     validar()  # primero valida
     hist_s, hist_i, hist_r, frames, tiempo = correr()  # luego simula
-    guardar(hist_s, hist_i, hist_r, frames, tiempo)  # luego guarda
+    guardar(hist_s, hist_i, hist_r, frames, tiempo, version="secuencial", cores=1)  # luego guarda

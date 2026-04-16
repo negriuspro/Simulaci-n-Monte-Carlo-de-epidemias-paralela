@@ -3,53 +3,108 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-
-def guardar(hist_s, hist_i, hist_r, frames, tiempo):
+def guardar(hist_s, hist_i, hist_r, frames, tiempo, version="secuencial", cores=1):
     os.makedirs("resultados", exist_ok=True)
 
-    # CSV estadisticas S/I/R por dia
-    with open("resultados/estadisticas_secuencial.csv", "w", newline="") as f:
+    nombre_csv = f"resultados/estadisticas_{version}_{cores}cores.csv"
+
+    with open(nombre_csv, "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["dia", "S", "I", "R"])
-        for d in range(dias):
+        for d in range(len(hist_s)):
             w.writerow([d, hist_s[d], hist_i[d], hist_r[d]])
-    print("Guardado: estadisticas_secuencial.csv")
 
-    # CSV tiempos para grafica de speedup
-    existe = os.path.exists("resultados/tiempos.csv")
-    with open("resultados/tiempos.csv", "a", newline="") as f:
+    print(f"Guardado: {nombre_csv}")
+
+    tiempos_path = "resultados/tiempos.csv"
+    existe = os.path.exists(tiempos_path)
+
+    with open(tiempos_path, "a", newline="") as f:
         w = csv.writer(f)
         if not existe:
             w.writerow(["version", "cores", "tiempo_s"])
-        w.writerow(["secuencial", 1, round(tiempo, 4)])
+
+        w.writerow([version, cores, round(tiempo, 4)])
+
     print("Guardado: tiempos.csv")
 
-    # Grafica curvas S, I, R
     plt.figure(figsize=(10, 4))
-    plt.plot(hist_s, label="Susceptibles", color="steelblue")
-    plt.plot(hist_i, label="Infectados", color="tomato")
-    plt.plot(hist_r, label="Recuperados", color="seagreen")
+    plt.plot(hist_s, label="Susceptibles")
+    plt.plot(hist_i, label="Infectados")
+    plt.plot(hist_r, label="Recuperados")
+
     plt.xlabel("Dia")
     plt.ylabel("Personas")
-    plt.title("Curvas SIR - secuencial")
+    plt.title(f"Curvas SIR - {version} ({cores} cores)")
     plt.legend()
     plt.tight_layout()
-    plt.savefig("resultados/curvas_sir_secuencial.png", dpi=150)
-    print("Guardado: curvas_sir_secuencial.png")
 
-    # GIF animado 1 frame por semana
+    nombre_png = f"resultados/curvas_sir_{version}_{cores}cores.png"
+    plt.savefig(nombre_png, dpi=150)
+    plt.close()
+
+    print(f"Guardado: {nombre_png}")
+
     fig, ax = plt.subplots(figsize=(6, 6))
     ax.axis("off")
+
     img = ax.imshow(frames[0], cmap="viridis", vmin=0, vmax=2, animated=True)
     titulo = ax.set_title("Dia 0")
 
     def animar(idx):
         img.set_data(frames[idx])
-        titulo.set_text("Dia " + str(idx * 7))
+        titulo.set_text(f"Dia {idx * 7}")
         return img, titulo
 
     anim = animation.FuncAnimation(
         fig, animar, frames=len(frames), interval=150, blit=True
     )
-    anim.save("resultados/brote_secuencial.gif", writer="pillow", fps=8)
+
+    nombre_gif = f"resultados/brote_{version}_{cores}cores.gif"
+    anim.save(nombre_gif, writer="pillow", fps=8)
     plt.close()
+
+    print(f"Guardado: {nombre_gif}")
+
+    generar_speedup()
+
+
+def generar_speedup():
+    path = "resultados/tiempos.csv"
+
+    if not os.path.exists(path):
+        return
+
+    data = []
+    t_secuencial = None  #Inicializar
+
+    with open(path, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row["version"] == "paralelo":
+                data.append((int(row["cores"]), float(row["tiempo_s"])))
+
+            if row["version"] == "secuencial":
+                t_secuencial = float(row["tiempo_s"])
+
+  
+    if not data or t_secuencial is None:
+        return
+
+    data.sort()
+    cores = [x[0] for x in data]
+    tiempos = [x[1] for x in data]
+
+    speedup = [t_secuencial / t for t in tiempos]
+
+    plt.figure()
+    plt.plot(cores, speedup, marker="o")
+    plt.xlabel("Cores")
+    plt.ylabel("Speed-up")
+    plt.title("Speed-up paralelo")
+    plt.grid()
+
+    plt.savefig("resultados/speedup.png")
+    plt.close()
+
+    print("Guardado: speedup.png")

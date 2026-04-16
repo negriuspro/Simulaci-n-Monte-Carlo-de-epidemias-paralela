@@ -56,3 +56,49 @@ brote_secuencial.gif: animacion del brote con 1 frame por semana
 requirements.txt
 
 Lista de librerias necesarias para correr el proyecto.
+
+
+Paralelización
+
+Paralelización de la simulación
+
+Se implementó una versión paralela del modelo SIR utilizando multiprocessing en Python para aprovechar múltiples núcleos del CPU.
+
+La estrategia utilizada fue dividir la grilla 2D en bloques horizontales, donde cada bloque es procesado por un proceso independiente.
+
+Cada proceso ejecuta la actualización diaria del modelo sobre su bloque, aplicando las mismas reglas del modelo SIR:
+- Contagio basado en vecinos infectados
+- Recuperación o muerte con cierta probabilidad
+
+Luego, los bloques actualizados se combinan nuevamente para formar la grilla completa del siguiente día.
+
+Para evitar problemas de aleatoriedad, cada proceso utiliza una semilla diferente en el generador de números aleatorios.
+
+Experimentos de rendimiento (Strong Scaling)
+
+Se realizaron pruebas ejecutando la simulación con diferentes cantidades de núcleos:
+
+- 1 core (secuencial)
+- 2 cores
+- 4 cores
+- 8 cores
+
+Resultados:
+
+El tiempo de ejecución disminuye a medida que se incrementa el número de cores, demostrando el beneficio del paralelismo.
+
+Ejemplo de resultados obtenidos:
+
+- Secuencial (1 core): ~8.5 segundos
+- Paralelo (2 cores): ~5.7 segundos
+
+Se generó una gráfica de speed-up que muestra la mejora de rendimiento al aumentar los núcleos.
+
+Limitaciones
+
+La implementación actual no incluye ghost cells completas entre bloques, lo que puede generar pequeñas diferencias en los bordes de cada bloque.
+
+Además, el uso de multiprocessing introduce overhead que limita la eficiencia en algunos casos.
+
+Estas limitaciones son comunes en implementaciones paralelas básicas.
+
