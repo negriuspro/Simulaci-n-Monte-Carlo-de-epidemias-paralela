@@ -1,104 +1,55 @@
-Simulacion Monte Carlo de epidemias paralela
+# Simulacion de epidemias SIR
 
-Simulacion de propagacion de enfermedades usando el modelo SIR en una grilla 2D de 1000x1000 celdas 1 millon de personas durante 365 dias.
+Este proyecto simula como se propaga una enfermedad en una poblacion de 1 millon de personas durante 365 dias usando el modelo SIR.
 
-Modelo SIR
+## Que es el modelo SIR
 
-Cada persona esta en uno de tres estados:
+Cada persona puede estar en uno de estos 3 estados:
+- S = sana (puede contagiarse)
+- I = infectada (puede contagiar a sus vecinos)
+- R = recuperada (ya no se enferma ni contagia)
 
-S (Susceptible): sana, puede contagiarse
-I (Infectado): enferma, puede contagiar a sus vecinos
-R (Recuperado): ya no participa en el contagio
+Cada dia el programa revisa cada persona y aplica estas reglas:
+- Si esta sana y tiene un vecino infectado, se puede infectar con 30% de probabilidad
+- Si esta infectada, puede recuperarse o morir con 12% de probabilidad
 
-Cada dia se aplican estas reglas a todas las personas:
-Una persona S se infecta si tiene al menos un vecino infectado con probabilidad 0.3
-Una persona I se recupera o muere con probabilidad 0.12 y pasa a R
+## Antes de correrlo instala las librerias
 
-Instalacion de requisitos
-
-Antes de correr el programa hay que instalar las librerias necesarias.
-
-Instala las librerias con este comando:
-
+```
 pip install -r requirements.txt
+```
 
-Eso instala automaticamente: numpy, scipy, matplotlib y pillow.
+Esto instala numpy, scipy, matplotlib y pillow que son las librerias que usa el proyecto.
 
-Como correrlo
+## Como correrlo
 
-python Secuencial.py
+Para correr solo la version secuencial:
+```
+python secuencial/Secuencial.py
+```
 
-Eso ejecuta la simulacion completa y guarda todos los resultados.
+Para correr la version paralela completa (incluye experimentos con 1, 2, 4 y 8 cores):
+```
+python paralelo/Paralelo.py
+```
 
-Archivos
+## Archivos del proyecto
 
-Secuencial.py
+- secuencial/Secuencial.py - codigo de la simulacion secuencial
+- paralelo/Paralelo.py - codigo de la simulacion paralela
+- guardar.py - guarda todos los resultados
+- requirements.txt - librerias necesarias
 
-Contiene la logica de la simulacion:
-Crea la grilla con 5 personas infectadas al inicio
-Cada dia actualiza el estado de todas las personas usando NumPy
-Al terminar llama automaticamente a guardar.py
+## Que genera al correr
 
-guardar.py
+En la carpeta resultados/ se guardan:
+- estadisticas_secuencial.csv - cuantos S, I y R hay cada dia
+- tiempos.csv - cuanto tardo cada version
+- speedup.csv y speedup.png - grafica de que tan rapido fue el paralelo vs el secuencial
+- curvas_sir_secuencial.png - grafica de como evoluciono la enfermedad
+- brote_secuencial.gif - animacion del brote dia a dia
+- brote_comparacion.gif - animacion comparando secuencial vs paralelo
 
-Guarda los resultados en la carpeta resultados:
+## Como funciona la version paralela
 
-Archivo
-
-estadisticas_secuencial.csv: cantidad de S, I, R por cada dia
-
-tiempos.csv: tiempo total de ejecucion
-
-curvas_sir_secuencial.png: grafica de las 3 curvas a lo largo del tiempo
-
-brote_secuencial.gif: animacion del brote con 1 frame por semana
-
-requirements.txt
-
-Lista de librerias necesarias para correr el proyecto.
-
-
-Paralelización
-
-Paralelización de la simulación
-
-Se implementó una versión paralela del modelo SIR utilizando multiprocessing en Python para aprovechar múltiples núcleos del CPU.
-
-La estrategia utilizada fue dividir la grilla 2D en bloques horizontales, donde cada bloque es procesado por un proceso independiente.
-
-Cada proceso ejecuta la actualización diaria del modelo sobre su bloque, aplicando las mismas reglas del modelo SIR:
-- Contagio basado en vecinos infectados
-- Recuperación o muerte con cierta probabilidad
-
-Luego, los bloques actualizados se combinan nuevamente para formar la grilla completa del siguiente día.
-
-Para evitar problemas de aleatoriedad, cada proceso utiliza una semilla diferente en el generador de números aleatorios.
-
-Experimentos de rendimiento (Strong Scaling)
-
-Se realizaron pruebas ejecutando la simulación con diferentes cantidades de núcleos:
-
-- 1 core (secuencial)
-- 2 cores
-- 4 cores
-- 8 cores
-
-Resultados:
-
-El tiempo de ejecución disminuye a medida que se incrementa el número de cores, demostrando el beneficio del paralelismo.
-
-Ejemplo de resultados obtenidos:
-
-- Secuencial (1 core): ~8.5 segundos
-- Paralelo (2 cores): ~5.7 segundos
-
-Se generó una gráfica de speed-up que muestra la mejora de rendimiento al aumentar los núcleos.
-
-Limitaciones
-
-La implementación actual no incluye ghost cells completas entre bloques, lo que puede generar pequeñas diferencias en los bordes de cada bloque.
-
-Además, el uso de multiprocessing introduce overhead que limita la eficiencia en algunos casos.
-
-Estas limitaciones son comunes en implementaciones paralelas básicas.
-
+La grilla se divide en bloques horizontales y cada core del procesador trabaja en un bloque al mismo tiempo. Se usan ghost cells que son filas prestadas de los bloques vecinos para que los bordes entre bloques funcionen correctamente. Las estadisticas como cantidad de infectados y R0 se calculan en paralelo y se suman al final.

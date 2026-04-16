@@ -4,3 +4,9 @@ paralelo,1,10.1327
 paralelo,2,5.747
 paralelo,4,4.0524
 paralelo,8,3.4875
+secuencial,1,11.0862
+paralelo,1,13.1732,0.37
+paralelo,2,8.8198,0.37
+paralelo,4,7.0174,0.37
+paralelo,8,7.4388,0.37
+secuencial,1,10.2406
